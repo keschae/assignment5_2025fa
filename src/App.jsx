@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import UserList from './components/UserList';
+import UserProfile from './components/UserProfile';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // State to hold the list of all users
+  const [users, setUsers] = useState([]);
+  // State to hold the user that is currently selected
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // TODO: Fetch users from the API when the component mounts
+  // Hint: Use the useEffect hook with an empty dependency array []
+
+  // TODO: Create an event handler function `handleUserSelect`
+  // This function should take a `user` object and call `setSelectedUser(user)`
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="App">
+      <header className="App-header">
+        <h1>User Weather Dashboard</h1>
+      </header>
+      <div className="dashboard-container">
+        <div className="user-list-panel">
+          <h2>Users</h2>
+          {/* TODO: Render the UserList component here */}
+          {/* Pass the `users` state and the `handleUserSelect` function as props */}
+        </div>
+        
+        {/* TODO: Add conditional rendering here */}
+        {/* The UserProfile component should only be rendered if `selectedUser` is not null */}
+        {/* Pass the `selectedUser` object as a prop */}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
