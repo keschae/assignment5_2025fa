@@ -1,22 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// TODO: Destructure `city` from props
-const WeatherWidget = (props) => {
+const WeatherWidget = ({ city }) => {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // TODO: Use useEffect to fetch weather data whenever the `city` prop changes
-  // The dependency array should include `city`
-  // Use `process.env.REACT_APP_OPENWEATHER_API_KEY` for your API key
+  useEffect(() => {
+    if (!city) return;
 
-  // TODO: Add conditional rendering for loading, error, and success states
+    const apiKey = process.env.REACT_APP_OPENWEATHER_API_KEY;
+    if (!apiKey) {
+      setError("API Key is missing.");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+      .then(response => {
+        setWeather(response.data);
+        setError(null);
+      })
+      .catch(err => {
+        setError('Could not fetch weather data.');
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [city]); // Re-run effect if the city prop changes
+
+  if (loading) return <p>Loading weather...</p>;
+  if (error) return <p>{error}</p>;
+  if (!weather) return null;
+
+  // Destructure the complex weather object for easy access
+  const { main, weather: weatherDetails, name } = weather;
+  const iconUrl = `http://openweathermap.org/img/wn/${weatherDetails[0].icon}@2x.png`;
 
   return (
     <div className="weather-widget">
-      {/* This is where you will render the weather data */}
-      <p>Weather widget will go here.</p>
+      <h3>Weather in {name}</h3>
+      <div className="weather-info">
+        <img src={iconUrl} alt={weatherDetails[0].description} />
+        <p><strong>{main.temp}°C</strong></p>
+        <p>{weatherDetails[0].description}</p>
+      </div>
     </div>
   );
 };

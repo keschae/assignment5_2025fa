@@ -1,26 +1,27 @@
 import React from 'react';
-import PostList from './PostList';
-import WeatherWidget from './WeatherWidget';
+import PostList from "./PostList";
+import WeatherWidget from "./WeatherWidget";
 
-// TODO: Destructure the `user` object from props
-const UserProfile = (props) => {
-  // You can also destructure nested properties for convenience
-  // const { name, email, address } = user;
+const UserProfile = ({ user }) => {
+  const { name, email, phone, website, address } = user;
 
   return (
     <div className="profile-card">
-      {/* TODO: Display user details like name, email, etc. */}
-      <h2>User Name</h2>
+      <h2>{name}</h2>
+      <p><strong>Email:</strong> {email}</p>
+      <p><strong>Phone:</strong> {phone}</p>
+      <p><strong>Website:</strong> <a href={`http://${website}`} target="_blank" rel="noopener noreferrer">{website}</a></p>
+      <p><strong>Address:</strong> {address.street}, {address.city}</p>
       
       <hr />
       
-      {/* TODO: Render the WeatherWidget component */}
-      {/* Pass the user's city as a prop. Hint: `user.address.city` */}
-      
+      {/* Passing a SIMPLE PROP (string) to WeatherWidget */}
+      <WeatherWidget city={address.city} />
+
       <hr />
 
-      {/* TODO: Render the PostList component */}
-      {/* Pass the user's id as a prop. Hint: `user.id` */}
+      {/* Passing a COMPLEX PROP (the entire user object) to PostList */}
+      <PostList userId={user.id} />
     </div>
   );
 };

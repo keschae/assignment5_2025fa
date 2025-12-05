@@ -1,22 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import UserList from './components/UserList';
-import UserProfile from './components/UserProfile';
+import UserList from "./components/UserLIst.jsx";
+import UserProfile from "./components/UserProfile.jsx";
 import './App.css';
 
 function App() {
-  // State to hold the list of all users
   const [users, setUsers] = useState([]);
-  // State to hold the user that is currently selected
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // TODO: Fetch users from the API when the component mounts
-  // Hint: Use the useEffect hook with an empty dependency array []
+  // Fetch users on component mount
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/users')
+      .then(response => {
+        setUsers(response.data);
+        setError(null);
+      })
+      .catch(err => {
+        setError('Failed to fetch users');
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []); // The empty array [] means this effect runs only once, when the component mounts.
 
-  // TODO: Create an event handler function `handleUserSelect`
-  // This function should take a `user` object and call `setSelectedUser(user)`
+  // Event handler to be passed to UserList
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+  };
 
   return (
     <div className="App">
@@ -26,13 +39,17 @@ function App() {
       <div className="dashboard-container">
         <div className="user-list-panel">
           <h2>Users</h2>
-          {/* TODO: Render the UserList component here */}
-          {/* Pass the `users` state and the `handleUserSelect` function as props */}
+          {loading && <p>Loading users...</p>}
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          {!loading && !error && <UserList users={users} onUserSelect={handleUserSelect} />}
         </div>
         
-        {/* TODO: Add conditional rendering here */}
-        {/* The UserProfile component should only be rendered if `selectedUser` is not null */}
-        {/* Pass the `selectedUser` object as a prop */}
+        {/* CONDITIONAL RENDERING: This section only shows if a user is selected */}
+        {selectedUser && (
+          <div className="user-profile-panel">
+            <UserProfile user={selectedUser} />
+          </div>
+        )}
       </div>
     </div>
   );
